@@ -1,0 +1,144 @@
+{
+  "file": "exemplo.bpmn",
+  "timestamp": "2025-11-25T19:46:48.567973",
+  "statistics": {
+    "total_elements": 6,
+    "element_counts": {
+      "serviceTask": 1,
+      "userTask": 1,
+      "scriptTask": 0,
+      "businessRuleTask": 0,
+      "callActivity": 0,
+      "startEvent": 1,
+      "endEvent": 2,
+      "intermediateCatchEvent": 0,
+      "intermediateThrowEvent": 0,
+      "boundaryEvent": 0,
+      "exclusiveGateway": 1,
+      "parallelGateway": 0,
+      "inclusiveGateway": 0,
+      "eventBasedGateway": 0,
+      "subProcess": 0
+    },
+    "total_issues": 12,
+    "issue_counts_by_severity": {
+      "CRITICAL": 11,
+      "WARNING": 1,
+      "INFO": 0
+    },
+    "issue_counts_by_category": {
+      "BPMN": 1,
+      "Expression": 7,
+      "Service Task": 1,
+      "User Task": 2,
+      "Task Listener": 1
+    },
+    "total_variables_detected": 6
+  },
+  "issues": [
+    {
+      "severity": "WARNING",
+      "category": "BPMN",
+      "element_id": "root",
+      "element_name": "BPMN Document",
+      "message": "BPMN 2.0 namespace may be incorrect or missing",
+      "details": "Ensure BPMN uses correct BPMN 2.0 namespace."
+    },
+    {
+      "severity": "CRITICAL",
+      "category": "Expression",
+      "element_id": "ServiceTask_1",
+      "element_name": "Processar Dados",
+      "message": "JUEL/UEL expression detected in delegateExpression",
+      "details": "Expression '${processDelegate}' uses Camunda 7 syntax. Must be converted to FEEL in Camunda 8. Example: '${myVar}' -> '=myVar'"
+    },
+    {
+      "severity": "CRITICAL",
+      "category": "Service Task",
+      "element_id": "ServiceTask_1",
+      "element_name": "Processar Dados",
+      "message": "Delegate expression must be converted to Job Worker",
+      "details": "Delegate: ${processDelegate}. Implement as external task worker in Camunda 8."
+    },
+    {
+      "severity": "CRITICAL",
+      "category": "User Task",
+      "element_id": "UserTask_1",
+      "element_name": "Aprovar Solicitação",
+      "message": "Embedded form must be converted to Camunda 8 Forms",
+      "details": "Form key: embedded:app:forms/approval-form.html. Migrate to Camunda Forms JSON schema."
+    },
+    {
+      "severity": "CRITICAL",
+      "category": "User Task",
+      "element_id": "UserTask_1",
+      "element_name": "Aprovar Solicitação",
+      "message": "Embedded form with 2 fields must be migrated",
+      "details": "Convert form fields to Camunda 8 Forms JSON schema."
+    },
+    {
+      "severity": "CRITICAL",
+      "category": "Expression",
+      "element_id": "UserTask_1",
+      "element_name": "Aprovar Solicitação",
+      "message": "JUEL/UEL expression detected in assignee",
+      "details": "Expression '${approver}' uses Camunda 7 syntax. Must be converted to FEEL in Camunda 8. Example: '${myVar}' -> '=myVar'"
+    },
+    {
+      "severity": "CRITICAL",
+      "category": "Expression",
+      "element_id": "Gateway_1",
+      "element_name": "Aprovado?",
+      "message": "JUEL/UEL expression detected in gateway condition on flow Flow_Approved",
+      "details": "Expression '${approved == true}' uses Camunda 7 syntax. Must be converted to FEEL in Camunda 8. Example: '${myVar}' -> '=myVar'"
+    },
+    {
+      "severity": "CRITICAL",
+      "category": "Expression",
+      "element_id": "Gateway_1",
+      "element_name": "Aprovado?",
+      "message": "JUEL/UEL expression detected in gateway condition on flow Flow_Rejected",
+      "details": "Expression '${approved == false}' uses Camunda 7 syntax. Must be converted to FEEL in Camunda 8. Example: '${myVar}' -> '=myVar'"
+    },
+    {
+      "severity": "CRITICAL",
+      "category": "Task Listener",
+      "element_id": "UserTask_1",
+      "element_name": "Aprovar Solicitação",
+      "message": "Task Listener not supported in Camunda 8",
+      "details": "Event: create. Convert listener logic to Job Worker or process redesign."
+    },
+    {
+      "severity": "CRITICAL",
+      "category": "Expression",
+      "element_id": "UserTask_1",
+      "element_name": "Aprovar Solicitação",
+      "message": "JUEL/UEL expression detected in Task Listener",
+      "details": "Expression '${taskListener}' uses Camunda 7 syntax. Must be converted to FEEL in Camunda 8. Example: '${myVar}' -> '=myVar'"
+    },
+    {
+      "severity": "CRITICAL",
+      "category": "Expression",
+      "element_id": "ServiceTask_1",
+      "element_name": "Processar Dados",
+      "message": "JUEL/UEL expression detected in I/O parameter input1",
+      "details": "Expression '${myVariable}' uses Camunda 7 syntax. Must be converted to FEEL in Camunda 8. Example: '${myVar}' -> '=myVar'"
+    },
+    {
+      "severity": "CRITICAL",
+      "category": "Expression",
+      "element_id": "ServiceTask_1",
+      "element_name": "Processar Dados",
+      "message": "JUEL/UEL expression detected in I/O parameter result",
+      "details": "Expression '${execution.getVariable('result')}' uses Camunda 7 syntax. Must be converted to FEEL in Camunda 8. Example: '${myVar}' -> '=myVar'"
+    }
+  ],
+  "process_variables": [
+    "approved",
+    "approver",
+    "execution",
+    "myVariable",
+    "processDelegate",
+    "taskListener"
+  ]
+}

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BPMN Migration Analyzer - Camunda 7 to 8</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>BPMN Migration Analyzer</h1>
+            <p class="subtitle">Camunda 7 to Camunda 8 Migration Assessment</p>
+            <p class="company">NTConsult</p>
+        </header>
+
+        <!-- Upload Section -->
+        <section class="upload-section">
+            <div class="upload-card">
+                <h2>Upload BPMN File</h2>
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <div class="file-input-wrapper">
+                        <input type="file" id="fileInput" name="file" accept=".bpmn,.xml" required>
+                        <label for="fileInput" class="file-label">
+                            <span id="fileName">Choose a BPMN file...</span>
+                            <span class="browse-btn">Browse</span>
+                        </label>
+                    </div>
+                    <button type="submit" class="analyze-btn" id="analyzeBtn">
+                        <span id="btnText">Analyze BPMN</span>
+                        <span id="btnLoader" class="loader" style="display: none;"></span>
+                    </button>
+                </form>
+                <p class="hint">Supported formats: .bpmn, .xml (max 16MB)</p>
+            </div>
+        </section>
+
+        <!-- Results Dashboard -->
+        <section id="dashboard" class="dashboard" style="display: none;">
+            <!-- Summary Cards -->
+            <div class="summary-cards">
+                <div class="card card-blue">
+                    <div class="card-icon">📊</div>
+                    <div class="card-content">
+                        <h3 id="totalElements">0</h3>
+                        <p>Total Elements</p>
+                    </div>
+                </div>
+                <div class="card card-red">
+                    <div class="card-icon">🔴</div>
+                    <div class="card-content">
+                        <h3 id="criticalIssues">0</h3>
+                        <p>Critical Issues</p>
+                    </div>
+                </div>
+                <div class="card card-orange">
+                    <div class="card-icon">⚠️</div>
+                    <div class="card-content">
+                        <h3 id="warningIssues">0</h3>
+                        <p>Warnings</p>
+                    </div>
+                </div>
+                <div class="card card-cyan">
+                    <div class="card-icon">ℹ️</div>
+                    <div class="card-content">
+                        <h3 id="infoIssues">0</h3>
+                        <p>Info</p>
+                    </div>
+                </div>
+                <div class="card card-green">
+                    <div class="card-icon">📝</div>
+                    <div class="card-content">
+                        <h3 id="totalVariables">0</h3>
+                        <p>Variables</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- File Info -->
+            <div class="info-section">
+                <h3>File Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">File:</span>
+                        <span id="fileName_display">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Analysis Date:</span>
+                        <span id="analysisDate">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Complexity Assessment -->
+            <div class="complexity-section" id="complexitySection">
+                <h3>Migration Complexity</h3>
+                <div class="complexity-card">
+                    <div class="complexity-badge" id="complexityBadge">-</div>
+                    <p id="complexityDescription">-</p>
+                </div>
+            </div>
+
+            <!-- Element Breakdown -->
+            <div class="breakdown-section">
+                <h3>Element Breakdown</h3>
+                <div class="table-wrapper">
+                    <table id="elementTable">
+                        <thead>
+                            <tr>
+                                <th>Element Type</th>
+                                <th>Count</th>
+                            </tr>
+                        </thead>
+                        <tbody id="elementTableBody">
+                            <tr>
+                                <td colspan="2">No data available</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Issues by Category -->
+            <div class="breakdown-section">
+                <h3>Issues by Category</h3>
+                <div class="table-wrapper">
+                    <table id="categoryTable">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Count</th>
+                            </tr>
+                        </thead>
+                        <tbody id="categoryTableBody">
+                            <tr>
+                                <td colspan="2">No data available</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Issues Tabs -->
+            <div class="issues-section">
+                <h3>Detailed Issues</h3>
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="critical">
+                        Critical <span class="tab-count" id="criticalCount">0</span>
+                    </button>
+                    <button class="tab-btn" data-tab="warning">
+                        Warning <span class="tab-count" id="warningCount">0</span>
+                    </button>
+                    <button class="tab-btn" data-tab="info">
+                        Info <span class="tab-count" id="infoCount">0</span>
+                    </button>
+                </div>
+                <div class="tab-content">
+                    <div id="criticalTab" class="tab-pane active">
+                        <div class="no-issues">No critical issues found</div>
+                    </div>
+                    <div id="warningTab" class="tab-pane">
+                        <div class="no-issues">No warnings found</div>
+                    </div>
+                    <div id="infoTab" class="tab-pane">
+                        <div class="no-issues">No info items found</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Process Variables -->
+            <div class="variables-section" id="variablesSection" style="display: none;">
+                <h3>Process Variables Detected</h3>
+                <div class="variables-list" id="variablesList"></div>
+            </div>
+
+            <!-- Export Buttons -->
+            <div class="export-section">
+                <h3>Export Results</h3>
+                <div class="export-buttons">
+                    <button class="export-btn" id="exportJsonBtn">
+                        <span>📄</span> Export JSON
+                    </button>
+                    <button class="export-btn" id="exportCsvBtn">
+                        <span>📊</span> Export CSV
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="error-message" style="display: none;"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

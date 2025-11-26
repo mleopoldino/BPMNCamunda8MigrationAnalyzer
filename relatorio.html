@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>BPMN Migration Analysis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .section {
+            background-color: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .critical { color: #e74c3c; font-weight: bold; }
+        .warning { color: #f39c12; font-weight: bold; }
+        .info { color: #3498db; font-weight: bold; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #34495e;
+            color: white;
+        }
+        .issue {
+            margin: 15px 0;
+            padding: 15px;
+            border-left: 4px solid #ddd;
+            background-color: #f9f9f9;
+        }
+        .issue.critical { border-left-color: #e74c3c; }
+        .issue.warning { border-left-color: #f39c12; }
+        .issue.info { border-left-color: #3498db; }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .stat-box {
+            flex: 1;
+            min-width: 200px;
+            margin: 10px;
+            padding: 15px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>BPMN Migration Analysis for Camunda 8</h1>
+        <p>NTConsult</p>
+        <p>File: exemplo.bpmn</p>
+        <p>Analysis Date: 2025-11-25 19:46:48</p>
+    </div>
+
+    <div class="section">
+        <h2>Statistics</h2>
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-number">6</div>
+                <div>Total Elements</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">12</div>
+                <div>Total Issues</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number critical">11</div>
+                <div>Critical</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number warning">1</div>
+                <div>Warnings</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number info">0</div>
+                <div>Info</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">6</div>
+                <div>Process Variables</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Element Breakdown</h2>
+        <table>
+            <tr><th>Element Type</th><th>Count</th></tr>
+            <tr><td>endEvent</td><td>2</td></tr>
+            <tr><td>exclusiveGateway</td><td>1</td></tr>
+            <tr><td>serviceTask</td><td>1</td></tr>
+            <tr><td>startEvent</td><td>1</td></tr>
+            <tr><td>userTask</td><td>1</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Issues by Category</h2>
+        <table>
+            <tr><th>Category</th><th>Count</th></tr>
+            <tr><td>BPMN</td><td>1</td></tr>
+            <tr><td>Expression</td><td>7</td></tr>
+            <tr><td>Service Task</td><td>1</td></tr>
+            <tr><td>Task Listener</td><td>1</td></tr>
+            <tr><td>User Task</td><td>2</td></tr>
+        </table>
+    </div>
+    <div class="section">
+        <h2 class="critical">CRITICAL Issues (11)</h2>
+        <div class="issue critical">
+            <strong>[Expression] JUEL/UEL expression detected in delegateExpression</strong><br>
+            <em>Element: Processar Dados (ID: ServiceTask_1)</em><br>
+            <p>Expression '${processDelegate}' uses Camunda 7 syntax. Must be converted to FEEL in Camunda 8. Example: '${myVar}' -> '=myVar'</p>
+        </div>
+        <div class="issue critical">
+            <strong>[Service Task] Delegate expression must be converted to Job Worker</strong><br>
+            <em>Element: Processar Dados (ID: ServiceTask_1)</em><br>
+            <p>Delegate: ${processDelegate}. Implement as external task worker in Camunda 8.</p>
+        </div>
+        <div class="issue critical">
+            <strong>[User Task] Embedded form must be converted to Camunda 8 Forms</strong><br>
+            <em>Element: Aprovar Solicitação (ID: UserTask_1)</em><br>
+            <p>Form key: embedded:app:forms/approval-form.html. Migrate to Camunda Forms JSON schema.</p>
+        </div>
+        <div class="issue critical">
+            <strong>[User Task] Embedded form with 2 fields must be migrated</strong><br>
+            <em>Element: Aprovar Solicitação (ID: UserTask_1)</em><br>
+            <p>Convert form fields to Camunda 8 Forms JSON schema.</p>
+        </div>
+        <div class="issue critical">
+            <strong>[Expression] JUEL/UEL expression detected in assignee</strong><br>
+            <em>Element: Aprovar Solicitação (ID: UserTask_1)</em><br>
+            <p>Expression '${approver}' uses Camunda 7 syntax. Must be converted to FEEL in Camunda 8. Example: '${myVar}' -> '=myVar'</p>
+        </div>
+        <div class="issue critical">
+            <strong>[Expression] JUEL/UEL expression detected in gateway condition on flow Flow_Approved</strong><br>
+            <em>Element: Aprovado? (ID: Gateway_1)</em><br>
+            <p>Expression '${approved == true}' uses Camunda 7 syntax. Must be converted to FEEL in Camunda 8. Example: '${myVar}' -> '=myVar'</p>
+        </div>
+        <div class="issue critical">
+            <strong>[Expression] JUEL/UEL expression detected in gateway condition on flow Flow_Rejected</strong><br>
+            <em>Element: Aprovado? (ID: Gateway_1)</em><br>
+            <p>Expression '${approved == false}' uses Camunda 7 syntax. Must be converted to FEEL in Camunda 8. Example: '${myVar}' -> '=myVar'</p>
+        </div>
+        <div class="issue critical">
+            <strong>[Task Listener] Task Listener not supported in Camunda 8</strong><br>
+            <em>Element: Aprovar Solicitação (ID: UserTask_1)</em><br>
+            <p>Event: create. Convert listener logic to Job Worker or process redesign.</p>
+        </div>
+        <div class="issue critical">
+            <strong>[Expression] JUEL/UEL expression detected in Task Listener</strong><br>
+            <em>Element: Aprovar Solicitação (ID: UserTask_1)</em><br>
+            <p>Expression '${taskListener}' uses Camunda 7 syntax. Must be converted to FEEL in Camunda 8. Example: '${myVar}' -> '=myVar'</p>
+        </div>
+        <div class="issue critical">
+            <strong>[Expression] JUEL/UEL expression detected in I/O parameter input1</strong><br>
+            <em>Element: Processar Dados (ID: ServiceTask_1)</em><br>
+            <p>Expression '${myVariable}' uses Camunda 7 syntax. Must be converted to FEEL in Camunda 8. Example: '${myVar}' -> '=myVar'</p>
+        </div>
+        <div class="issue critical">
+            <strong>[Expression] JUEL/UEL expression detected in I/O parameter result</strong><br>
+            <em>Element: Processar Dados (ID: ServiceTask_1)</em><br>
+            <p>Expression '${execution.getVariable('result')}' uses Camunda 7 syntax. Must be converted to FEEL in Camunda 8. Example: '${myVar}' -> '=myVar'</p>
+        </div>
+    </div>
+    <div class="section">
+        <h2 class="warning">WARNING Issues (1)</h2>
+        <div class="issue warning">
+            <strong>[BPMN] BPMN 2.0 namespace may be incorrect or missing</strong><br>
+            <em>Element: BPMN Document (ID: root)</em><br>
+            <p>Ensure BPMN uses correct BPMN 2.0 namespace.</p>
+        </div>
+    </div>
+    <div class="section">
+        <h2>Process Variables Detected</h2>
+        <ul>
+            <li>approved</li>
+            <li>approver</li>
+            <li>execution</li>
+            <li>myVariable</li>
+            <li>processDelegate</li>
+            <li>taskListener</li>
+        </ul>
+    </div>
+</body>
+</html>

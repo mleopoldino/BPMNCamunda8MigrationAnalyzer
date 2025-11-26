@@ -1,0 +1,13 @@
+Severity,Category,Element ID,Element Name,Message,Details
+WARNING,BPMN,root,BPMN Document,BPMN 2.0 namespace may be incorrect or missing,Ensure BPMN uses correct BPMN 2.0 namespace.
+CRITICAL,Expression,ServiceTask_1,Processar Dados,JUEL/UEL expression detected in delegateExpression,Expression '${processDelegate}' uses Camunda 7 syntax. Must be converted to FEEL in Camunda 8. Example: '${myVar}' -> '=myVar'
+CRITICAL,Service Task,ServiceTask_1,Processar Dados,Delegate expression must be converted to Job Worker,Delegate: ${processDelegate}. Implement as external task worker in Camunda 8.
+CRITICAL,User Task,UserTask_1,Aprovar Solicitação,Embedded form must be converted to Camunda 8 Forms,Form key: embedded:app:forms/approval-form.html. Migrate to Camunda Forms JSON schema.
+CRITICAL,User Task,UserTask_1,Aprovar Solicitação,Embedded form with 2 fields must be migrated,Convert form fields to Camunda 8 Forms JSON schema.
+CRITICAL,Expression,UserTask_1,Aprovar Solicitação,JUEL/UEL expression detected in assignee,Expression '${approver}' uses Camunda 7 syntax. Must be converted to FEEL in Camunda 8. Example: '${myVar}' -> '=myVar'
+CRITICAL,Expression,Gateway_1,Aprovado?,JUEL/UEL expression detected in gateway condition on flow Flow_Approved,Expression '${approved == true}' uses Camunda 7 syntax. Must be converted to FEEL in Camunda 8. Example: '${myVar}' -> '=myVar'
+CRITICAL,Expression,Gateway_1,Aprovado?,JUEL/UEL expression detected in gateway condition on flow Flow_Rejected,Expression '${approved == false}' uses Camunda 7 syntax. Must be converted to FEEL in Camunda 8. Example: '${myVar}' -> '=myVar'
+CRITICAL,Task Listener,UserTask_1,Aprovar Solicitação,Task Listener not supported in Camunda 8,Event: create. Convert listener logic to Job Worker or process redesign.
+CRITICAL,Expression,UserTask_1,Aprovar Solicitação,JUEL/UEL expression detected in Task Listener,Expression '${taskListener}' uses Camunda 7 syntax. Must be converted to FEEL in Camunda 8. Example: '${myVar}' -> '=myVar'
+CRITICAL,Expression,ServiceTask_1,Processar Dados,JUEL/UEL expression detected in I/O parameter input1,Expression '${myVariable}' uses Camunda 7 syntax. Must be converted to FEEL in Camunda 8. Example: '${myVar}' -> '=myVar'
+CRITICAL,Expression,ServiceTask_1,Processar Dados,JUEL/UEL expression detected in I/O parameter result,Expression '${execution.getVariable('result')}' uses Camunda 7 syntax. Must be converted to FEEL in Camunda 8. Example: '${myVar}' -> '=myVar'

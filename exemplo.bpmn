@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                   xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   id="Definitions_1"
+                   targetNamespace="http://bpmn.io/schema/bpmn">
+
+  <bpmn:process id="ExampleProcess" name="Exemplo de Processo" isExecutable="true">
+
+    <bpmn:startEvent id="StartEvent_1" name="Início">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="ServiceTask_1" />
+
+    <bpmn:serviceTask id="ServiceTask_1" name="Processar Dados"
+                      camunda:delegateExpression="${processDelegate}">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="input1">${myVariable}</camunda:inputParameter>
+          <camunda:outputParameter name="result">${execution.getVariable('result')}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="ServiceTask_1" targetRef="UserTask_1" />
+
+    <bpmn:userTask id="UserTask_1" name="Aprovar Solicitação"
+                   camunda:assignee="${approver}"
+                   camunda:formKey="embedded:app:forms/approval-form.html">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="approved" label="Aprovado?" type="boolean" />
+          <camunda:formField id="comments" label="Comentários" type="string" />
+        </camunda:formData>
+        <camunda:taskListener event="create" delegateExpression="${taskListener}" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="UserTask_1" targetRef="Gateway_1" />
+
+    <bpmn:exclusiveGateway id="Gateway_1" name="Aprovado?">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_Approved</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Rejected</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:sequenceFlow id="Flow_Approved" name="Sim" sourceRef="Gateway_1" targetRef="EndEvent_1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${approved == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+
+    <bpmn:sequenceFlow id="Flow_Rejected" name="Não" sourceRef="Gateway_1" targetRef="EndEvent_2">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${approved == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+
+    <bpmn:endEvent id="EndEvent_1" name="Aprovado">
+      <bpmn:incoming>Flow_Approved</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:endEvent id="EndEvent_2" name="Rejeitado">
+      <bpmn:incoming>Flow_Rejected</bpmn:incoming>
+    </bpmn:endEvent>
+
+  </bpmn:process>
+
+</bpmn:definitions>
