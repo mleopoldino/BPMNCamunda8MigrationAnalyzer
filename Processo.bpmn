@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.2.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.41.0">
   <bpmn:process id="N2412AprovarOCreditoProcess" name="24.1.2 Aprovar o crédito" isExecutable="true" camunda:isStartableInTasklist="false">
     <bpmn:startEvent id="PropostaDeCreditoAnalisadaStartEvent" name="Proposta&#10;de crédito&#10;analisada">
       <bpmn:outgoing>SequenceFlow_1h0cj1w</bpmn:outgoing>
@@ -145,10 +145,10 @@
       <bpmn:incoming>SequenceFlow_0oldeda</bpmn:incoming>
       <bpmn:outgoing>Flow_07ewtag</bpmn:outgoing>
     </bpmn:intermediateThrowEvent>
-    <bpmn:sequenceFlow id="Flow_07ewtag" sourceRef="AprovacaoDoCreditoConcluidaEvent" targetRef="InformarPropostaDeCreditoProvadaTask" />
+    <bpmn:sequenceFlow id="Flow_07ewtag" sourceRef="AprovacaoDoCreditoConcluidaEvent" targetRef="AtualizarDatabaseTask" />
     <bpmn:sequenceFlow id="Flow_1gb8a57" sourceRef="InformarPropostaDeCreditoProvadaTask" targetRef="PropostaDeCreditoAprovadaEndEvent" />
     <bpmn:userTask id="InformarPropostaDeCreditoProvadaTask" name="Informar&#10;proposta&#10;de crédito provada" camunda:assignee="demo">
-      <bpmn:incoming>Flow_07ewtag</bpmn:incoming>
+      <bpmn:incoming>Flow_1gj6fuv</bpmn:incoming>
       <bpmn:outgoing>Flow_1gb8a57</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:boundaryEvent id="FraudeDetectadaBoundaryEvent" name="Fraude&#10;detectada" attachedToRef="IterarCadaPapelDaRotaDeAprovacaoSubProcess">
@@ -157,6 +157,14 @@
         <bpmn:condition xsi:type="bpmn:tFormalExpression">${fraudeDetectada == true}</bpmn:condition>
       </bpmn:conditionalEventDefinition>
     </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_1gj6fuv" sourceRef="AtualizarDatabaseTask" targetRef="InformarPropostaDeCreditoProvadaTask" />
+    <bpmn:serviceTask id="AtualizarDatabaseTask" name="Atualizar Database" camunda:asyncBefore="true" camunda:delegateExpression="${updateDatabase}">
+      <bpmn:extensionElements>
+        <camunda:failedJobRetryTimeCycle>R3PT1M</camunda:failedJobRetryTimeCycle>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_07ewtag</bpmn:incoming>
+      <bpmn:outgoing>Flow_1gj6fuv</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmn:error id="Error_0elfnzn" name="credito-reprovado" errorCode="99" />
   <bpmn:signal id="Signal_07a3iz6" name="canal-vermelho" />
@@ -166,50 +174,6 @@
   <bpmn:escalation id="Escalation_1gjvd4p" name="fraude-detectada-no-credito" escalationCode="88" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="N2412AprovarOCreditoProcess">
-      <bpmndi:BPMNEdge id="Flow_1gb8a57_di" bpmnElement="Flow_1gb8a57">
-        <di:waypoint x="1140" y="180" />
-        <di:waypoint x="1202" y="180" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_07ewtag_di" bpmnElement="Flow_07ewtag">
-        <di:waypoint x="978" y="180" />
-        <di:waypoint x="1040" y="180" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1d0si2y_di" bpmnElement="Flow_1d0si2y">
-        <di:waypoint x="478" y="180" />
-        <di:waypoint x="540" y="180" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0hru7qq_di" bpmnElement="Flow_0hru7qq">
-        <di:waypoint x="442" y="380" />
-        <di:waypoint x="330" y="380" />
-        <di:waypoint x="330" y="220" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_07tr18p_di" bpmnElement="Flow_07tr18p">
-        <di:waypoint x="580" y="298" />
-        <di:waypoint x="580" y="380" />
-        <di:waypoint x="478" y="380" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0roa1t9_di" bpmnElement="Flow_0roa1t9">
-        <di:waypoint x="770" y="298" />
-        <di:waypoint x="770" y="380" />
-        <di:waypoint x="842" y="380" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_1htcut5_di" bpmnElement="SequenceFlow_1htcut5">
-        <di:waypoint x="660" y="298" />
-        <di:waypoint x="660" y="380" />
-        <di:waypoint x="842" y="380" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_0oldeda_di" bpmnElement="SequenceFlow_0oldeda">
-        <di:waypoint x="890" y="180" />
-        <di:waypoint x="942" y="180" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_13h8egs_di" bpmnElement="SequenceFlow_13h8egs">
-        <di:waypoint x="380" y="180" />
-        <di:waypoint x="442" y="180" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_1h0cj1w_di" bpmnElement="SequenceFlow_1h0cj1w">
-        <di:waypoint x="198" y="180" />
-        <di:waypoint x="280" y="180" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="PropostaDeCreditoAnalisadaStartEvent" bioc:stroke="rgb(67, 160, 71)" bioc:fill="rgb(200, 230, 201)">
         <dc:Bounds x="162" y="162" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -219,14 +183,6 @@
       <bpmndi:BPMNShape id="SubProcess_1fa2ifj_di" bpmnElement="IterarCadaPapelDaRotaDeAprovacaoSubProcess" isExpanded="true">
         <dc:Bounds x="540" y="80" width="350" height="200" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_0y8lp2z_di" bpmnElement="SequenceFlow_0y8lp2z">
-        <di:waypoint x="780" y="180" />
-        <di:waypoint x="832" y="180" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_0gg331l_di" bpmnElement="SequenceFlow_0gg331l">
-        <di:waypoint x="616" y="180" />
-        <di:waypoint x="680" y="180" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="StartEvent_04byapu_di" bpmnElement="StartEvent_04byapu">
         <dc:Bounds x="580" y="162" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -236,10 +192,18 @@
       <bpmndi:BPMNShape id="UserTask_0v98h2z_di" bpmnElement="EncaminharAAprovacaoDoCreditoTask">
         <dc:Bounds x="680" y="140" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0gg331l_di" bpmnElement="SequenceFlow_0gg331l">
+        <di:waypoint x="616" y="180" />
+        <di:waypoint x="680" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0y8lp2z_di" bpmnElement="SequenceFlow_0y8lp2z">
+        <di:waypoint x="780" y="180" />
+        <di:waypoint x="832" y="180" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="EndEvent_1uzganz_di" bpmnElement="PropostaDeCreditoAprovadaEndEvent" bioc:stroke="rgb(30, 136, 229)" bioc:fill="rgb(187, 222, 251)">
-        <dc:Bounds x="1202" y="162" width="36" height="36" />
+        <dc:Bounds x="1342" y="162" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1196" y="205" width="49" height="40" />
+          <dc:Bounds x="1336" y="205" width="49" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BusinessRuleTask_0i5d0z6_di" bpmnElement="DefinirARotaDeAprovacaoTask">
@@ -254,33 +218,6 @@
       <bpmndi:BPMNShape id="Activity_1ws2dmz_di" bpmnElement="InspecionarOProcessoDeAprovacaoDeCreditoSubProcess" isExpanded="true">
         <dc:Bounds x="135" y="500" width="650" height="350" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_1o5cs62_di" bpmnElement="Flow_1o5cs62">
-        <di:waypoint x="470" y="600" />
-        <di:waypoint x="527" y="600" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_17w6eob_di" bpmnElement="Flow_17w6eob">
-        <di:waypoint x="383" y="560" />
-        <di:waypoint x="545" y="560" />
-        <di:waypoint x="545" y="582" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1aajtbb_di" bpmnElement="Flow_1aajtbb">
-        <di:waypoint x="445" y="625" />
-        <di:waypoint x="445" y="790" />
-        <di:waypoint x="527" y="790" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1x7gi9z_di" bpmnElement="Flow_1x7gi9z">
-        <di:waypoint x="445" y="625" />
-        <di:waypoint x="445" y="700" />
-        <di:waypoint x="527" y="700" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_08xe79b_di" bpmnElement="Flow_08xe79b">
-        <di:waypoint x="365" y="600" />
-        <di:waypoint x="420" y="600" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1tqxw26_di" bpmnElement="Flow_1tqxw26">
-        <di:waypoint x="211" y="600" />
-        <di:waypoint x="265" y="600" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Gateway_0161bcy_di" bpmnElement="Gateway_0161bcy" isMarkerVisible="true">
         <dc:Bounds x="420" y="575" width="50" height="50" />
       </bpmndi:BPMNShape>
@@ -317,6 +254,33 @@
           <dc:Bounds x="393" y="526" width="84" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1tqxw26_di" bpmnElement="Flow_1tqxw26">
+        <di:waypoint x="211" y="600" />
+        <di:waypoint x="265" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08xe79b_di" bpmnElement="Flow_08xe79b">
+        <di:waypoint x="365" y="600" />
+        <di:waypoint x="420" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1x7gi9z_di" bpmnElement="Flow_1x7gi9z">
+        <di:waypoint x="445" y="625" />
+        <di:waypoint x="445" y="700" />
+        <di:waypoint x="527" y="700" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1aajtbb_di" bpmnElement="Flow_1aajtbb">
+        <di:waypoint x="445" y="625" />
+        <di:waypoint x="445" y="790" />
+        <di:waypoint x="527" y="790" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17w6eob_di" bpmnElement="Flow_17w6eob">
+        <di:waypoint x="383" y="560" />
+        <di:waypoint x="545" y="560" />
+        <di:waypoint x="545" y="582" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1o5cs62_di" bpmnElement="Flow_1o5cs62">
+        <di:waypoint x="470" y="600" />
+        <di:waypoint x="527" y="600" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0sv8q8p_di" bpmnElement="CanalVerdeEvent" bioc:stroke="rgb(67, 160, 71)" bioc:fill="rgb(200, 230, 201)">
         <dc:Bounds x="442" y="362" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -336,7 +300,10 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0ghikwp_di" bpmnElement="InformarPropostaDeCreditoProvadaTask">
-        <dc:Bounds x="1040" y="140" width="100" height="80" />
+        <dc:Bounds x="1180" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ssokce_di" bpmnElement="AtualizarDatabaseTask">
+        <dc:Bounds x="1030" y="140" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0uco8rm_di" bpmnElement="FraudeDetectadaBoundaryEvent">
         <dc:Bounds x="752" y="262" width="36" height="36" />
@@ -356,6 +323,54 @@
           <dc:Bounds x="635" y="305" width="50" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1h0cj1w_di" bpmnElement="SequenceFlow_1h0cj1w">
+        <di:waypoint x="198" y="180" />
+        <di:waypoint x="280" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_13h8egs_di" bpmnElement="SequenceFlow_13h8egs">
+        <di:waypoint x="380" y="180" />
+        <di:waypoint x="442" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0oldeda_di" bpmnElement="SequenceFlow_0oldeda">
+        <di:waypoint x="890" y="180" />
+        <di:waypoint x="942" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1htcut5_di" bpmnElement="SequenceFlow_1htcut5">
+        <di:waypoint x="660" y="298" />
+        <di:waypoint x="660" y="380" />
+        <di:waypoint x="842" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0roa1t9_di" bpmnElement="Flow_0roa1t9">
+        <di:waypoint x="770" y="298" />
+        <di:waypoint x="770" y="380" />
+        <di:waypoint x="842" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07tr18p_di" bpmnElement="Flow_07tr18p">
+        <di:waypoint x="580" y="298" />
+        <di:waypoint x="580" y="380" />
+        <di:waypoint x="478" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0hru7qq_di" bpmnElement="Flow_0hru7qq">
+        <di:waypoint x="442" y="380" />
+        <di:waypoint x="330" y="380" />
+        <di:waypoint x="330" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1d0si2y_di" bpmnElement="Flow_1d0si2y">
+        <di:waypoint x="478" y="180" />
+        <di:waypoint x="540" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07ewtag_di" bpmnElement="Flow_07ewtag">
+        <di:waypoint x="978" y="180" />
+        <di:waypoint x="1030" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1gb8a57_di" bpmnElement="Flow_1gb8a57">
+        <di:waypoint x="1280" y="180" />
+        <di:waypoint x="1342" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1gj6fuv_di" bpmnElement="Flow_1gj6fuv">
+        <di:waypoint x="1130" y="180" />
+        <di:waypoint x="1180" y="180" />
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
